@@ -209,6 +209,7 @@ fun CustomCardColor(s: String, color: String) {
         )
     }
 }
+/*
 
 @Preview
 @Composable
@@ -253,3 +254,4 @@ fun ProductVCardPreview(){
 
     })
 }
+ */
