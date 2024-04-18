@@ -4,4 +4,4 @@ before_install:
   - ./scripts/prepareJitpackEnvironment.sh
 install:
   - File="rsv-release.aar"
-  - mvn install:install-file -Dfile=${File} -DgroupId=com.github.karimwahdan -DartifactId=rsv -Dversion=1.5 -Dpackaging=aar -DgeneratePom=true
+  - mvn install:install-file -Dfile=${File} -DgroupId=com.github.karimwahdan -DartifactId=rsv -Dversion=1.6 -Dpackaging=aar -DgeneratePom=true
