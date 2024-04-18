@@ -61,6 +61,7 @@ dependencies {
     implementation (libs.coil) // check for the latest version
     implementation (libs.coil.compose) // check for the latest version
     implementation (libs.accompanist.coil)
+    debugImplementation(libs.ui.tooling)
 
 
 }

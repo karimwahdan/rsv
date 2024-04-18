@@ -1,6 +1,6 @@
 [versions]
 accompanistCoil = "0.15.0"
-agp = "8.3.1"
+agp = "8.3.2"
 coilCompose = "2.6.0"
 coil = "2.6.0"
 foundation = "1.6.5"
@@ -16,6 +16,7 @@ appcompat = "1.6.1"
 material = "1.11.0"
 rsm = "1.6"
 ui = "1.6.5"
+uiTooling = "1.6.5"
 
 [libraries]
 accompanist-coil = { module = "com.google.accompanist:accompanist-coil", version.ref = "accompanistCoil" }
@@ -40,6 +41,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 rsm = { module = "com.github.karimwahdan:rsm", version.ref = "rsm" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
