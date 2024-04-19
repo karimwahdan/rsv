@@ -1,5 +1,6 @@
 package com.karimwahdan.rsv.cards
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
@@ -34,26 +36,35 @@ import coil.size.Scale
 import com.karimwahdan.rsm.cart.CartItem
 import com.karimwahdan.rsm.product.Product
 import com.karimwahdan.rsv.VerticalSpacer
-import com.karimwahdan.rsv.QuantityValue
+import com.karimwahdan.rsv.buttons.IncrementButtons
 
 @Composable
-fun CartItemCard(deleteButtonLabel:String,
-                 saveForLaterButtonLabel:String,
-                 backgroundColor:Color,
-                 borderColor:Color,
-                 deleteButtonColor:Color,
-                 saveForLaterButtonColor:Color,
-                 cartTitleColor: Color,
-                 cartProductTotalPriceColor:Color,
-                 cartProductDiscPriceColor: Color,
-                 cartProductPriceColor:Color,
-                 quantityColor: Color,
-                 placeholderImage: Int,
-                 errorImage: Int,
-                 product: Product,
-                 cartItem:CartItem?,
-                 quantity:MutableIntState,
-                 deleteClick:()->Unit={}) {
+fun CartItemCard(
+    @SuppressLint("ModifierParameter") incrementButtonsModifier: Modifier = Modifier,
+    incrementButtonBackgroundColor: Color,
+    incrementButtonColors: ButtonColors,
+    incrementIcon: Int?,
+    decrementButtonColors: ButtonColors,
+    decrementIcon: Int?,
+    deleteButtonLabel:String,
+    saveForLaterButtonLabel:String,
+    backgroundColor:Color,
+    borderColor:Color,
+    deleteButtonColor:Color,
+    saveForLaterButtonColor:Color,
+    cartTitleColor: Color,
+    cartProductTotalPriceColor:Color,
+    cartProductDiscPriceColor: Color,
+    cartProductPriceColor:Color,
+    quantityColor: Color,
+    placeholderImage: Int,
+    errorImage: Int,
+    product: Product,
+    cartItem:CartItem?,
+    quantity:MutableIntState,
+    deleteClick:()->Unit={},
+    onIncrementClick: () -> Unit,
+    onDecrementClick: () -> Unit) {
     var totalProductDiscountPrice by remember { mutableFloatStateOf(0f) }
     if (cartItem != null) {
         val productCount = cartItem.quantity
@@ -64,7 +75,8 @@ fun CartItemCard(deleteButtonLabel:String,
     }
     if (quantity.intValue > 0) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .clip(RoundedCornerShape(5.dp))
                 .padding(5.dp)
                 .border(1.dp, borderColor, RoundedCornerShape(5.dp))
@@ -101,7 +113,17 @@ fun CartItemCard(deleteButtonLabel:String,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                QuantityValue(quantityColor,value = quantity)
+                IncrementButtons(
+                    modifier = incrementButtonsModifier,
+                    backgroundColor =incrementButtonBackgroundColor ,
+                    quantityColor = quantityColor,
+                    incrementButtonColors = incrementButtonColors,
+                    incrementIcon = incrementIcon,
+                    decrementButtonColors = decrementButtonColors,
+                    decrementIcon = decrementIcon,
+                    quantity = quantity,
+                    onIncrementClick = onIncrementClick,
+                    onDecrementClick = onDecrementClick)
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
@@ -111,17 +133,11 @@ fun CartItemCard(deleteButtonLabel:String,
                     if (cartItem != null) {
                         Text(modifier = Modifier.clickable {
                             deleteClick.invoke()
-                         /*
-                           TODO: this is the clickable, I should copy this to the delete Click
-                            sharedViewModel.deleteCartItem(cartItem)
-                            sharedViewModel.setProductQuantity(product, 0)
-                          */
-                        }, text = deleteButtonLabel,
-                            color=deleteButtonColor)
+                        },
+                            text = deleteButtonLabel,color=deleteButtonColor)
                     }
 
-                    Text(text = saveForLaterButtonLabel,
-                    color=saveForLaterButtonColor)
+                    Text(text = saveForLaterButtonLabel,color=saveForLaterButtonColor)
                 }
             }
         }
@@ -142,12 +158,7 @@ fun CartItemProductTotalPrice(cartProductTotalPriceColor:Color,total: Float) {
 fun CartItemProductPrice(cartProductPriceColor:Color,cartItem: CartItem) {
     val product=cartItem.product
     if (product!=null){
-        Text(
-            fontSize = 11.sp,
-            color = cartProductPriceColor,
-            textDecoration = TextDecoration.LineThrough,
-            text = "${product.price?:0}$"
-        )
+        Text(fontSize = 11.sp,color = cartProductPriceColor,textDecoration = TextDecoration.LineThrough,text = "${product.price?:0}$")
     }
 
 }
@@ -156,38 +167,36 @@ fun CartItemProductPrice(cartProductPriceColor:Color,cartItem: CartItem) {
 fun CartItemProductDiscountPrice(cartProductDiscPriceColor:Color,cartItem: CartItem) {
     val product=cartItem.product
     if (product!=null){
-        Text(
-            text = "${product.discount_price?:0}$",
-            modifier = Modifier.padding(horizontal = 5.dp),
-            color=cartProductDiscPriceColor
-        )
+        Text(text = "${product.discount_price?:0}$",modifier = Modifier.padding(horizontal = 5.dp),color=cartProductDiscPriceColor)
     }
-
 }
 
 @Composable
 fun CartItemProductName(cartTitleColor:Color,cartItem: CartItem) {
     val product=cartItem.product
     if (product!=null){
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            fontWeight = FontWeight.Bold,
-            text = product.name?:"",
-            color= cartTitleColor
-        )
+        Text(modifier = Modifier.fillMaxWidth(),fontWeight = FontWeight.Bold,text = product.name?:"",color= cartTitleColor)
     }
+}
 
+@Composable
+fun CartItemProductCustomName(cartTitleColor:Color,cartItem: CartItem) {
+    val custom=cartItem.productCustom
+    if (custom!=null){
+        Text(modifier = Modifier.fillMaxWidth(),fontWeight = FontWeight.Bold,text = custom.name?:"",color= cartTitleColor)
+    }
 }
 
 @Composable
 fun CartItemCardImage(placeholderImage:Int,errorImage:Int,cartItem: CartItem, modifier: Modifier = Modifier) {
     val product=cartItem.product
-    if (product!=null){
+    val custom=cartItem.productCustom
+    if (custom!=null){
         Image(
             rememberAsyncImagePainter(
                 ImageRequest
                     .Builder(LocalContext.current)
-                    .data(product.image)
+                    .data(custom.image)
                     .apply(block = fun ImageRequest.Builder.() {
                         placeholder(placeholderImage)
                             .error(errorImage)
@@ -195,10 +204,34 @@ fun CartItemCardImage(placeholderImage:Int,errorImage:Int,cartItem: CartItem, mo
                     .scale(scale = Scale.FIT)
                     .build()
             ),
-            modifier = modifier.width(115.dp).padding(5.dp),
+            modifier = modifier
+                .width(115.dp)
+                .padding(5.dp),
             contentScale = ContentScale.Fit,
             contentDescription = null
         )
+    }else{
+        if (product!=null){
+            Image(
+                rememberAsyncImagePainter(
+                    ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(product.image)
+                        .apply(block = fun ImageRequest.Builder.() {
+                            placeholder(placeholderImage)
+                                .error(errorImage)
+                        })
+                        .scale(scale = Scale.FIT)
+                        .build()
+                ),
+                modifier = modifier
+                    .width(115.dp)
+                    .padding(5.dp),
+                contentScale = ContentScale.Fit,
+                contentDescription = null
+            )
+        }
+
     }
 
 }
