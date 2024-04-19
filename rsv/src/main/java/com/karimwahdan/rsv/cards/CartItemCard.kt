@@ -95,6 +95,7 @@ fun CartItemCard(
                 ) {
                     if (cartItem != null) {
                         CartItemProductName(cartTitleColor,cartItem)
+                        CartItemProductCustomName(cartTitleColor,cartItem)
                         Row(
                             verticalAlignment =
                             Alignment.CenterVertically
@@ -103,7 +104,6 @@ fun CartItemCard(
                             CartItemProductPrice(cartProductPriceColor,cartItem)
                         }
                     }
-
                     VerticalSpacer(height = 10)
                     CartItemProductTotalPrice(cartProductTotalPriceColor,totalProductDiscountPrice)
                 }
